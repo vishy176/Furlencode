@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="styles/home.css">
+  <link rel="stylesheet" type="text/css" href="styles/viewstores.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+	<title>Night Owl</title>
+</head>
+<body>
+<div class="" style="height:100%;overflow-x:hidden">
+  <nav class="navbar navbar-default" style="background:rgba(0, 0, 0, 0.31);">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Night Owl</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class=""><a href="#">Bangalore <span class="sr-only">(current)</span></a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Help</a></li>
+        <li><a href="#">My Account</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div>
+<div class="row" ng-app="nightOwlApp" ng-controller="StoreCtrl">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="thumbnail">
+                    <img class="img-responsive" src="http://placehold.it/800x300" alt="">
+                    <div style="padding:15px;">
+                    <div class="caption-full">
+                        <h4 class="pull-right">{{store.Status}}</h4>
+                        <h4>{{store.storeName}}</h4>
+                            <strong>{{store.category}}
+                            </strong>
+                        <p>{{store.desc}}</p>
+                    </div>
+                    <a class="btn btn-success pull-right" ng-click="checkInStore(store._id)">Check In</a>
+                    <div class="ratings">
+                        <p class="pull-right">{{reviews.length}} reviews</p>
+                        <p>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                            4.0 stars
+                        </p>
+                    </div>
+                    </div>
+                </div>
+                <div class="container">
+                {{marker}}
+                  <div class="section">
+                    <div class="row">
+                    <div class="col s12 m8 l12">
+                      <div style="width:100%">
+                          <div id="map"></div>
+                          <div id="class" ng-repeat="marker in markers | orderBy : 'title'">
+                               <a href="#" ng-click="openInfoWindow($event, marker)">{{marker.title}}</a>
+                          </div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="well">
+                    <div class="">
+                      <form class="form-horizontal">
+                        <fieldset>
+                        <!-- Form Name -->
+                        <legend>Leave Review</legend>
+                        <!-- Multiple Radios (inline) -->
+                        <div class="form-group">
+                          <label class="col-md-4 control-label" for="Rating">Rating</label>
+                          <div class="col-md-4"> 
+                            <label class="radio-inline" for="Rating-0">
+                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-0" value="1" checked="checked">
+                              1
+                            </label> 
+                            <label class="radio-inline" for="Rating-1">
+                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-1" value="2">
+                              2
+                            </label> 
+                            <label class="radio-inline" for="Rating-2">
+                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-2" value="3">
+                              3
+                            </label> 
+                            <label class="radio-inline" for="Rating-3">
+                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-3" value="4">
+                              4
+                            </label> 
+                            <label class="radio-inline" for="Rating-4">
+                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-4" value="5">
+                              5
+                            </label>
+                          </div>
+                        </div>
+                        <!-- Textarea -->
+                        <div class="form-group">
+                          <label class="col-md-4 control-label" for="Review">Review</label>
+                          <div class="col-md-4">                     
+                            <textarea ng-model="storeReview.review" class="form-control" id="Review" name="Review">Tell us about your experience (Optional)</textarea>
+                          </div>
+                        </div>
+                        </fieldset>
+                        </form>
+                    </div>
+                    {{storeReview}}
+                    <div class="text-right">
+                        <a class="btn btn-success" ng-click="setStoreReview()">Leave a Review</a>
+                    </div>
+
+                    <hr>
+                    <span ng-repeat="review in reviews">
+                    {{review.rating}}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span ng-repeat="n in [1,2,3,4]" class="glyphicon glyphicon-star"></span>
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                            Anonymous
+                            <span class="pull-right">10 days ago</span>
+                            <p>{{review.review}}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    </span>
+                   
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</div>
+</body>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+	<script type="text/javascript" src="lib/angular.js"></script>
+  <script type="text/javascript" src="lib/angular-filter.js"></script>
+  <script type="text/javascript" src="scripts/directives/ngAutocomplete.js"></script>
+	<script type="text/javascript" src="app.js"></script>
+  <script type="text/javascript" src="scripts/controllers/store.ctrl.js"></script>
+</html>

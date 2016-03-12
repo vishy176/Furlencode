@@ -1,0 +1,1 @@
+var nightOwlApp = angular.module("nightOwlApp",['ngAutocomplete','angular.filter']);
