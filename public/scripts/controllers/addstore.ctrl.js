@@ -4,12 +4,6 @@ nightOwlApp.controller('addStoreCtrl',function ($scope,$http) {
     	align: 'left'
 	});
 	$scope.addStore = function(){
-			// $scope.storeInfo1 = {};
-			// $scope.storeInfo1.storeName = "Jaggu Wines";
-			// $scope.storeInfo1.loc = [12.9715987,77.59456269999998];
-			// $scope.storeInfo1.category = "Wines";
-			// $scope.storeInfo1.desc = "High on Booze";
-			// $scope.storeInfo1.descsdfsdf = "High on Booze";
 			var lat = $scope.storeInfo.locationdetails.geometry.location.lat();
 			var lng = $scope.storeInfo.locationdetails.geometry.location.lng();
 			$scope.storeInfo.loc = [lat,lng];
@@ -47,5 +41,27 @@ nightOwlApp.controller('addStoreCtrl',function ($scope,$http) {
 						{"Category":"Others","SubCategory":"Fashon"},
 						{"Category":"Others","SubCategory":"Cigarettes and other Tobacco items"},
 						{"Category":"Others","SubCategory":"Beauty Care"}];
+					if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(function(position) {
+						console.log(position);
+						var pos = {
+							lat: position.coords.latitude,
+							lng: position.coords.longitude
+						};
+						$scope.storeInfo = {};
+						$http.get('http://maps.googleapis.com/maps/api/geocode/json?latlng='+pos.lat+','+pos.lng)
+							.then(function (result) {
+								console.log(result.data);
+								$scope.storeInfo.locationdetails = result.data.results[0];
+								$scope.storeInfo.storeLocation = result.data.results[0].formatted_address;
+							},function (err) {
+								alert("Error");
+							})
+					}, function() {
+					});
+				} else {
+					// Browser doesn't support Geolocation
+					handleLocationError(false, infoWindow, map.getCenter());
+				}
 
 });
