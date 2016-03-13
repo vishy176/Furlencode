@@ -1,4 +1,8 @@
 nightOwlApp.controller('addStoreCtrl',function ($scope,$http) {
+	$('.clockpicker').clockpicker({
+		placement: 'top',
+    	align: 'left'
+	});
 	$scope.addStore = function(){
 			// $scope.storeInfo1 = {};
 			// $scope.storeInfo1.storeName = "Jaggu Wines";
@@ -12,8 +16,8 @@ nightOwlApp.controller('addStoreCtrl',function ($scope,$http) {
 			console.log($scope.storeInfo);
 			$http.post('http://localhost:3000/api/stores', $scope.storeInfo)
 				.then(function (result) {
-					console.log(result);
 					$scope.storeInfo = "";
+					window.location.href="viewstores.html";
 				},function (err) {
 					alert("Error");
 				});

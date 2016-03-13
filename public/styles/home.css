@@ -2,6 +2,10 @@ body{
 	font-family: 'Roboto', sans-serif;
   background-color: #f0f0f0;
 }
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 .homebanner{
 	background-image: url(/images/nightowlbanner2.jpg);
 	/*background-color: black;*/

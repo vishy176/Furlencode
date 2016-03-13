@@ -1,8 +1,13 @@
 nightOwlApp.controller('homeCtrl',function ($scope,$http) {
 	$scope.viewStores  =function(){
-		window.location.href = "viewstores.html?"+$scope.storeInfo.locationdetails.geometry.location.lat()+"/"+$scope.storeInfo.locationdetails.geometry.location.lng()
-	}
+		try {
+		window.location.href = "viewstores.html?"+$scope.storeInfo.locationdetails.geometry.location.lat()+"/"+$scope.storeInfo.locationdetails.geometry.location.lng()+'/'
+		} catch (e) {
+		window.location.href = "viewstores.html?"+$scope.storeInfo.locationdetails.geometry.location.lat+"/"+$scope.storeInfo.locationdetails.geometry.location.lng+'/'
+		}
 
+	}
+  $scope.storeInfo = {};
 	$scope.categorydata = [{"Category":"Food and Brevarages","SubCategory":"Family Restaurants"},
 						{"Category":"Food and Brevarages","SubCategory":"Bar and Restuarents"},
 						{"Category":"Food and Brevarages","SubCategory":"Street Foods"},
@@ -27,4 +32,26 @@ nightOwlApp.controller('homeCtrl',function ($scope,$http) {
 						{"Category":"Others","SubCategory":"Fashon"},
 						{"Category":"Others","SubCategory":"Cigarettes and other Tobacco items"},
 						{"Category":"Others","SubCategory":"Beauty Care"}];
+						if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+						console.log(position);
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+						$http.get('http://maps.googleapis.com/maps/api/geocode/json?latlng='+pos.lat+','+pos.lng)
+							.then(function (result) {
+								console.log(result.data);
+								$scope.storeInfo.locationdetails = result.data.results[0];
+								$scope.storeInfo.storeLocation = result.data.results[0].formatted_address;
+							},function (err) {
+								alert("Error");
+							})
+          }, function() {
+          });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+
 });

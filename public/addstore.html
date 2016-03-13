@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="styles/home.css">
+  <link rel="stylesheet" type="text/css" href="lib/bootstrap-clockpicker.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 	<title>Night Owl</title>
 </head>
@@ -63,7 +64,7 @@
   <div class="col-md-8"><h1 style="color:white;text-align:center;font-size:60px;">Add Store</h1></div>
   <div class="col-md-2"></div>
 </div> -->
-<div class="row" style="margin-top:7%;" ng-app="nightOwlApp" ng-controller="addStoreCtrl">
+<div class="row" style="margin-top:7%;" ng-app="nightOwlApp" ng-controller="addStoreCtrl" ng-cloak>
   <div class="col-md-4"></div>
   <div class="col-md-4" style="text-align:center;background-color: rgba(255, 255, 255, 0.36);color:#2B3233; padding: 15px;">
       <div class="form-box">
@@ -89,11 +90,26 @@
               </div>
               <div class="form-group">
                   <label class="sr-only" for="Category">Category</label>
-                  <!-- <input type="Text" ng-model="storeInfo.category"class="form-control" id="Category" placeholder="Category"> -->
                   <select ng-model="storeInfo.category" class="form-control" required>
                       <option value="" selected>Select Category</option>
                       <option ng-repeat="cate in categorydata | unique : 'Category'">{{cate.Category}}</option>
                   </select>
+              </div>
+              <div class="form-group">
+                  <div class="input-group clockpicker" data-placement="left" data-autoclose="true">
+                      <input ng-model="storeInfo.opentime" type="text" class="form-control" placeholder="Open Time">
+                      <span class="input-group-addon">
+                          <span class="glyphicon glyphicon-time"></span>
+                      </span>
+                  </div>
+              </div>
+              <div class="form-group">
+                  <div class="input-group clockpicker" data-placement="left" data-autoclose="true">
+                      <input ng-model="storeInfo.closetime" type="text" class="form-control" placeholder="close Time">
+                      <span class="input-group-addon">
+                          <span class="glyphicon glyphicon-time"></span>
+                      </span>
+                  </div>
               </div>
               <div class="form-group">
                   <label class="sr-only" for="StoreName">Description</label>
@@ -117,4 +133,5 @@
   <script type="text/javascript" src="scripts/directives/ngAutocomplete.js"></script>
 	<script type="text/javascript" src="app.js"></script>
   <script type="text/javascript" src="scripts/controllers/addstore.ctrl.js"></script>
+  <script type="text/javascript" src="lib/bootstrap-clockpicker.js"></script>
 </html>

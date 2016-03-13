@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="styles/home.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 	<title>Night Owl</title>
 </head>
 <body class="homebanner">
@@ -41,6 +42,7 @@
         </li> -->
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li><a href="addstore.html">Add Owlet</a></li>
         <li><a href="#">Help</a></li>
         <li><a href="#">My Account</a></li>
         <!-- <li class="dropdown">
@@ -60,27 +62,27 @@
 <div>
 <div class="row">
 	<div class="col-md-2"></div>
-	<div class="col-md-8"><h1 style="color:white;text-align:center;font-size:60px;">Stores to buy at night</h1></div>
+	<div class="col-md-8"><h1 style="color:white;text-align:center;font-size:60px;"># Night Life</h1></div>
 	<div class="col-md-2"></div>
 </div>
-<div class="row" style="margin-top:7%;" ng-app="nightOwlApp" ng-controller="homeCtrl">
+<div class="row" style="margin-top:7%;" ng-app="nightOwlApp" ng-controller="homeCtrl" ng-cloak>
 	<div class="col-md-2"></div>
 	<div class="col-md-8" style="text-align:center;">
 		<form class="form-inline">
 		    <div class="form-group">
 		        <label class="sr-only" for="Location">Location</label>
 		        <!-- <input type="text" class="form-control" id="Location" placeholder="Location"> -->
-            <input type="text"  class="form-control" ng-autocomplete ng-model="storeInfo.storeLocation" options="options" details="storeInfo.locationdetails" required/>
+            <input type="text"  class="form-control input-lg" ng-autocomplete ng-model="storeInfo.storeLocation" options="options" details="storeInfo.locationdetails" required/>
 		    </div>
 		    <div class="form-group">
 		        <label class="sr-only" for="Category">Category</label>
 		        <!-- <input type="Text" class="form-control" id="Category" placeholder="Category"> -->
-            <select ng-model="selectedcate" class="form-control">
+            <select ng-model="selectedcate" class="form-control input-lg">
                 <option value="" selected>Select Category</option>
                 <option ng-repeat="cate in categorydata | unique : 'Category'">{{cate.Category}}</option>
               </select>
 		    </div>
-		    <button ng-click="viewStores()" class="btn btn-primary">Search</button>
+		    <button ng-click="viewStores()" class="btn btn-primary input-lg"><b>Search</b></button>
 		</form>
 	</div>
 	<div class="col-md-2"></div>

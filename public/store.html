@@ -5,6 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="styles/home.css">
   <link rel="stylesheet" type="text/css" href="styles/viewstores.css">
+  <link rel="stylesheet" type="text/css" href="styles/rating.css">
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 	<title>Night Owl</title>
 </head>
@@ -36,77 +37,72 @@
   </div>
 </nav>
 <div>
-<div class="row" ng-app="nightOwlApp" ng-controller="StoreCtrl">
+<div class="row" ng-app="nightOwlApp" ng-controller="StoreCtrl" ng-cloak>
       <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/800x300" alt="">
-                    <div style="padding:15px;">
-                    <div class="caption-full">
-                        <h4 class="pull-right">{{store.Status}}</h4>
-                        <h4>{{store.storeName}}</h4>
-                            <strong>{{store.category}}
-                            </strong>
-                        <p>{{store.desc}}</p>
-                    </div>
-                    <a class="btn btn-success pull-right" ng-click="checkInStore(store._id)">Check In</a>
-                    <div class="ratings">
-                        <p class="pull-right">{{reviews.length}} reviews</p>
-                        <p>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star-empty"></span>
-                            4.0 stars
-                        </p>
-                    </div>
-                    </div>
-                </div>
-                <div class="container">
-                {{marker}}
-                  <div class="section">
-                    <div class="row">
+                    <!-- <img class="img-responsive" src="http://placehold.it/800x300" alt=""> -->
+                    <div class="row" style="height:200px;width:100%;margin-left: 0px;">
                     <div class="col s12 m8 l12">
-                      <div style="width:100%">
-                          <div id="map"></div>
+                      <div style="width:100%;">
+                          <div id="map" style="height:200px;width:100%;margin-left: 0px;"></div>
                           <div id="class" ng-repeat="marker in markers | orderBy : 'title'">
                                <a href="#" ng-click="openInfoWindow($event, marker)">{{marker.title}}</a>
                           </div>
                       </div>
                     </div>
                     </div>
-                  </div>
+                    <div style="padding:15px;">
+                    <div class="caption-full">
+                        <h4 class="pull-right">{{store.Status}}</h4>
+                        <h4>{{store.storeName}}</h4>
+                            <strong>{{store.category}}
+                            </strong>
+                            <strong>{{store.storeLocation}}
+                            </strong>
+                        <p>{{store.desc}}</p>
+                    </div>
+                    <button class="btn btn-success pull-right" ng-click="checkInStore(store._id,'open')">Check In</button>&nbsp;&nbsp;
+                    <button class="btn btn-danger pull-right" ng-click="checkInStore(store._id,'close')">Report Closed</button>
+                    <p class="pull-right" style="line-height: 34px;">Last Checkin at <b>{{lastcheckin | date:'HH:mm'}} AM &nbsp;</b></p>
+                    <div class="ratings">
+                        <p>{{reviews.length}} reviews</p>
+                        <p>
+                            <span ng-repeat="n in getTimes(store.reviews[0].rating)  track by $index" class="glyphicon glyphicon-star"></span>
+                            <span ng-repeat="n in getTimes(5-store.reviews[0].rating)  track by $index" class="glyphicon glyphicon-star-empty"></span>
+                        </p>
+                    </div>
+                    </div>
                 </div>
                 <div class="well">
                     <div class="">
-                      <form class="form-horizontal">
+                      <form class="form-horizontal" id="ratingsForm">
                         <fieldset>
                         <!-- Form Name -->
                         <legend>Leave Review</legend>
                         <!-- Multiple Radios (inline) -->
                         <div class="form-group">
                           <label class="col-md-4 control-label" for="Rating">Rating</label>
-                          <div class="col-md-4"> 
-                            <label class="radio-inline" for="Rating-0">
-                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-0" value="1" checked="checked">
+                          <div class="col-md-4 stars">
+                            <label class="radio-inline" for="star-1">
+                              <input ng-model="storeReview.rating" type="radio" name="star" class="star-1" id="star-1" value="1">
                               1
-                            </label> 
-                            <label class="radio-inline" for="Rating-1">
-                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-1" value="2">
+                            </label>
+                            <label class="radio-inline" for="star-2">
+                              <input ng-model="storeReview.rating" type="radio" name="star" class="star-2" id="star-2" value="2">
                               2
-                            </label> 
-                            <label class="radio-inline" for="Rating-2">
-                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-2" value="3">
+                            </label>
+                            <label class="radio-inline" for="star-3">
+                              <input ng-model="storeReview.rating" type="radio" name="star" class="star-3" id="star-3" value="3">
                               3
-                            </label> 
-                            <label class="radio-inline" for="Rating-3">
-                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-3" value="4">
+                            </label>
+                            <label class="radio-inline" for="star-4">
+                              <input ng-model="storeReview.rating" type="radio" name="star" class="star-4" id="star-4" value="4">
                               4
-                            </label> 
-                            <label class="radio-inline" for="Rating-4">
-                              <input ng-model="storeReview.rating" type="radio" name="Rating" id="Rating-4" value="5">
+                            </label>
+                            <label class="radio-inline" for="star-5">
+                              <input ng-model="storeReview.rating" type="radio" name="star" class="star-5" id="star-5" value="5">
                               5
                             </label>
                           </div>
@@ -114,33 +110,31 @@
                         <!-- Textarea -->
                         <div class="form-group">
                           <label class="col-md-4 control-label" for="Review">Review</label>
-                          <div class="col-md-4">                     
+                          <div class="col-md-4">
                             <textarea ng-model="storeReview.review" class="form-control" id="Review" name="Review">Tell us about your experience (Optional)</textarea>
                           </div>
                         </div>
                         </fieldset>
                         </form>
                     </div>
-                    {{storeReview}}
                     <div class="text-right">
                         <a class="btn btn-success" ng-click="setStoreReview()">Leave a Review</a>
                     </div>
 
                     <hr>
                     <span ng-repeat="review in reviews">
-                    {{review.rating}}
                     <div class="row">
                         <div class="col-md-12">
-                            <span ng-repeat="n in [1,2,3,4]" class="glyphicon glyphicon-star"></span>
-                            <span class="glyphicon glyphicon-star-empty"></span>
+                            <span ng-repeat="n in getTimes(review.rating)  track by $index" class="glyphicon glyphicon-star"></span>
+                            <span ng-repeat="n in getTimes(5-review.rating)  track by $index" class="glyphicon glyphicon-star-empty"></span>
                             Anonymous
-                            <span class="pull-right">10 days ago</span>
+                            <span class="pull-right">2 hours ago</span>
                             <p>{{review.review}}</p>
                         </div>
                     </div>
                     <hr>
                     </span>
-                   
+
 
                 </div>
 

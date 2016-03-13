@@ -38,7 +38,7 @@ exports.storeByLocation = function (req, res) {
   console.log(req.body);
   var findlocationjson = '{ "loc" :{ $near :' + req.body +'}}';
   console.log(findlocationjson)
-  Stores.find(findlocationjson).exec(function (err, stores) {
+  Stores.find(findlocationjson).populate('checkins','_id storestatus checkintime', null, { sort: { 'checkintime': -1 } }).populate("reviews").exec(function (err, stores) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -59,17 +59,17 @@ exports.read = function (req, res) {
   var checkins;
   var x={};
   x["storedata"] = req.store
-  getReviewsOfStore(req.store.id,function(storereviews){
+  //getReviewsOfStore(req.store.id,function(storereviews){
     //console.log("appending here")
     //console.log(req.store);
     //console.log(storereviews);
-    x["reviews"] = storereviews;
-    getCheckinsOfStore(req.store.id,function(checkins){
+    //x["reviews"] = storereviews;
+    //getCheckinsOfStore(req.store.id,function(checkins){
       //console.log(checkins);
-      x["checkins"] = checkins;
+      //x["checkins"] = checkins;
       res.json(x);
-    })
-  });
+    //})
+  //});
 };
 
 /**
@@ -115,7 +115,7 @@ exports.delete = function (req, res) {
  * List of Stores
  */
 exports.list = function (req, res) {
-  Stores.find().exec(function (err, stores) {
+  Stores.find().populate('checkins','_id storestatus checkintime', null, { sort: { 'checkintime': -1 } }).populate("reviews").exec(function (err, stores) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -137,7 +137,7 @@ exports.storeByID = function (req, res, next, id) {
     });
   }
 
-  Stores.findById(id).exec(function (err, store) {
+  Stores.findById(id).populate('checkins','_id storestatus checkintime', null, { sort: { 'checkintime': -1 } }).populate("reviews").exec(function (err, store) {
     if (err) {
       return next(err);
     } else if (!store) {

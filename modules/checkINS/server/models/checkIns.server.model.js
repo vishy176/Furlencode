@@ -18,6 +18,9 @@ var CheckInSchema = new Schema({
   },
   checkintime:{
     type: Date
+  },
+  storestatus:{
+    type: String
   }
 });
 

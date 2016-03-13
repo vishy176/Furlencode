@@ -6,6 +6,7 @@
 var path = require('path'),
   mongoose = require('mongoose'),
   checkIns = mongoose.model('CheckIns'),
+  Stores=mongoose.model('Stores'),
   errorHandler = require(path.resolve('./modules/core/server/controllers/errors.server.controller'));
 
 /**
@@ -16,14 +17,31 @@ exports.create = function (req, res) {
   console.log(req.body)
 
   var checkIn = new checkIns(req.body);
-
   checkIn.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.json(checkIn);
+      Stores.findById(req.body.storeid).exec(function (err, store) {
+        if (err) {
+          return next(err);
+        } else if (!store) {
+          return res.status(404).send({
+            message: 'No article with that identifier has been found'
+          });
+        }
+        store.checkins.push(checkIn);
+        store.save(function (err) {
+          if (err) {
+            return res.status(400).send({
+              message: errorHandler.getErrorMessage(err)
+            });
+          } else {
+            res.json(store);
+          }
+        });
+      });
     }
   });
 };

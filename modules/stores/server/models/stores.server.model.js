@@ -19,7 +19,18 @@ var StoresSchema = new Schema({
   },
   category:{
     type: String
-  }
+  },
+  opentime:{
+    type: String
+  },
+  storeLocation:{
+    type: String
+  },
+  closetime:{
+    type: String
+  },
+  checkins: [{ type: Schema.Types.ObjectId, ref: 'CheckIns'}],
+  reviews: [{ type: Schema.Types.ObjectId, ref: 'Reviews'}]
 });
 
 mongoose.model('Stores', StoresSchema);

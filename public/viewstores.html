@@ -2,12 +2,12 @@
   <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  	<link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
-  	<link rel="stylesheet" type="text/css" href="styles/home.css">
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="styles/home.css">
     <link rel="stylesheet" type="text/css" href="styles/viewstores.css">
-  	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  	<title>Night Owl</title>
+    <title>Night Owl</title>
   </head>
   <body >
   <div class="" style="height:100%;overflow-x:hidden">
@@ -37,7 +37,7 @@
     </div>
   </nav>
   <div>
-  <div class="row" ng-app="nightOwlApp" ng-controller="viewStoresCtrl">
+  <div class="row" ng-app="nightOwlApp" ng-controller="viewStoresCtrl" ng-cloak>
         <div>
           <div class="container-fluid" style="margin-top: -20px;">
           <div class="well well-sm">
@@ -49,9 +49,6 @@
                          class="form-control"
                          placeholder="Search" ng-model="searchtext"/>
               </div>
-                <!-- <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                </div> -->
               </div>
               <div class="col-md-2">
                 <select ng-model="selectedcate" class="form-control">
@@ -65,14 +62,20 @@
                   <option ng-repeat="cate in categorydata | unique : 'SubCategory' | filter:{Category:selectedcate}">{{cate.SubCategory}}</option>
                 </select>
               </div>
+              <div class="col-md-1">
+                <select class="form-control">
+                  <option value="" selected>Open</option>
+                  <option >Close</option>
+                </select>
+              </div>
               <div class="col-md-3">
               <strong>Display</strong>
-              <div class="btn-group">
-                  <a href="#" id="list" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list">
+              <div class="btn-group" ng-init="showview = 'list'">
+                  <a href="#" id="list" ng-click="showview = 'list'" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list">
                   </span>List</a>
-                  <a href="#" id="grid" class="btn btn-default btn-sm"><span
-                      class="glyphicon glyphicon-th"></span>Grid</a>
-                  <a href="#" id="map" class="btn btn-default btn-sm"><span><i class="material-icons" style="font-size:12px">map</i></span>Map</a>
+                  <!-- <a href="#" id="grid" class="btn btn-default btn-sm"><span
+                      class="glyphicon glyphicon-th"></span>Grid</a> -->
+                  <a href="#" ng-click="showview = 'map'" id="mapview" class="btn btn-default btn-sm"><span><i class="material-icons" style="font-size:12px">map</i></span>Map</a>
               </div>
               </div>
               <div class="col-md-1"></div>
@@ -81,29 +84,35 @@
               </div>
           </div>
           </div>
-      <div id="products" class="row list-group">
+      <div ng-class="{hide:showview!='list'}" id="products" class="row list-group">
         <div class="col-md-1"></div>
           <div class="col-md-10">
-            <div class="item" ng-repeat="store in stores | filter:{category:selectedcate} | filter:searchtext">
+            <div class="item list-group-item" ng-repeat="store in stores | filter:{category:selectedcate} | filter:searchtext">
               <div class="thumbnail">
-                  <img class="group list-group-image" src="http://placehold.it/200x125/000/fff" alt="" />
+                  <img class="group list-group-image" style="width:200px;height:125px;" ng-src="{{getImgsrc(store.category)}}" alt="" />
                   <div class="row caption">
-                      <div class="col-md-2"></div>
-                      <div class="col-md-8">
-                        <h4 class="group inner list-group-item-heading">{{store.storeName}}</h4>
+                      <div class="col-md-8" style="width:78%;">
+                        <h4 class="group inner list-group-item-heading">{{store.storeName}}
+                          <span style="float:right">{{store.checkins[0].storestatus}}</span>
+                        </h4>
                         <p class="group inner list-group-item-text">{{store.desc}}</p>
-                        <p>Rating:{{}}</p>
+                        <p>
+                        <span ng-repeat="n in getTimes(store.reviews[0].rating)  track by $index" class="glyphicon glyphicon-star"></span>
+                        <span ng-repeat="n in getTimes(5-store.reviews[0].rating)  track by $index" class="glyphicon glyphicon-star-empty"></span>
+                        </p>
                             <div class="row">
                               <span>
-                                <a class="btn btn-success" style="height:30px" ng-click="checkInStore(store._id)">Check In</a>
+                                <a class="btn btn-success" style="height:30px" ng-click="checkInStore(store._id,'open')" data-toggle="modal" data-target="#myModal">Check In</a>
                               </span>
                               <span>
+                                <a class="btn btn-danger" style="height:30px" ng-click="checkInStore(store._id,'close')">Report Closed</a>
+                              </span>
+                              <span style="float:right">Last Check In at <b>{{store.checkins[0].checkintime | date:'HH:mm'}} AM</b>
+                                |<span>&nbsp;<b> {{store.dist | number:2}} Kms </b>from you</span><span>
                                   <a class="btn btn-success" style="height:30px" ng-href="store.html?{{store._id}}">View</a>
                               </span>
+                              </span>
                             </div>
-                      </div>
-                      <div class="col-md-2">
-                        <p>Hello</p>
                       </div>
 
                   </div>
@@ -112,17 +121,61 @@
         </div>
           <div class="col-md-1"></div>
       </div>
-  </div>
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <!-- <h4 class="modal-title">Thanks For Checking In</h4> -->
+                </div>
+                <div class="modal-body">
+                    Thanks for your check in
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+  </div>
+  </div>
+  <div>
+  <style type="text/css">
+    #map {
+        height:500px;
+        width:100%;
+    }
+    .infoWindowContent {
+        font-size:  14px !important;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+    }
+</style>
+    <div class="container" id ="mapcotainer" ng-class="{hide:showview!='map'}">
+      <div class="section">
+        <div class="row">
+        <div class="col s12 m8 l12">
+          <div>
+              <div id="map"></div>
+
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
   </div>
   </div>
   </body>
-  	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
-  	<script type="text/javascript" src="lib/angular.js"></script>
+    <script type="text/javascript" src="lib/angular.js"></script>
     <script type="text/javascript" src="lib/angular-filter.js"></script>
     <script type="text/javascript" src="scripts/directives/ngAutocomplete.js"></script>
-  	<script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="app.js"></script>
     <script type="text/javascript" src="scripts/controllers/viewstores.ctrl.js"></script>
+    <script type="text/javascript" src="lib/lodash.js"></script>
   </html>

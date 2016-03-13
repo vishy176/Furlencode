@@ -3,16 +3,35 @@ nightOwlApp.controller('StoreCtrl',function ($scope,$http) {
 	var storeid = url.split('?')[1];
 	console.log(storeid);
 
-	$scope.getNumber = function(num) {
-    return new Array(num);
+	$scope.getTimes = function(num){
+		return new Array(num);
 	}
-
+	$scope.checkInStore = function(storeid,state){
+		// alert(storeid);
+			$scope.checkInInfo = {};
+			$scope.checkInInfo.checkintime = new Date()
+			$scope.checkInInfo.userid = "xxx";
+			$scope.checkInInfo.storeid = storeid;
+			$scope.checkInInfo.storestatus = state;
+			$http.post('http://localhost:3000/api/checkins',$scope.checkInInfo)
+				.then(function (result) {
+					console.log(result.data);
+					$scope.getStoreDetail()				
+				},function (err) {
+					alert("Error");
+				})
+	}
 	$scope.getStoreDetail = function(){
 			$http.get('http://localhost:3000/api/stores/'+storeid)
 				.then(function (result) {
 					console.log(result.data);
 					$scope.store = result.data.storedata;
-					$scope.reviews = result.data.reviews;
+					$scope.reviews = result.data.storedata.reviews;
+					$scope.checkins = result.data.storedata.checkins;
+					$scope.lastcheckin = new Date($scope.checkins[0].checkintime);
+					console.log($scope.lastcheckin);
+					createMarker({"lat":$scope.store.loc[0],"long":$scope.store.loc[1]});
+					$scope.map.setCenter({"lat":$scope.store.loc[0],"long":$scope.store.loc[1]});
 				},function (err) {
 					alert("Error");
 				})
@@ -25,74 +44,84 @@ nightOwlApp.controller('StoreCtrl',function ($scope,$http) {
 			$http.post('http://localhost:3000/api/reviews',$scope.storeReview)
 				.then(function (result) {
 					console.log(result.data);
-					$scope.getStoreDetail()
+					$scope.storeReview="";
+					$scope.getStoreDetail();
 				},function (err) {
 					alert("Error");
 				})
-	}
+	};
 
 	var cities = [
-    {
-        lat:12.9828393,
-        long:77.74545379999995
-    },
-    {
-        lat:13.9828393,
-        long:77.74545379999995
-    },
-    {
-        lat:12.9828000,
-        long:77.7454537990
-    },
-    {
-        lat:12.98283,
-        long:77.74549995
-    },
-    {
-        lat:12.93,
-        long:77.7454535
-    }
-];
+              {
+                  city : 'India',
+                  desc : 'This is the best country in the world!',
+                  lat : 23.200000,
+                  long : 79.225487
+              },
+              {
+                  city : 'New Delhi',
+                  desc : 'The Heart of India!',
+                  lat : 28.500000,
+                  long : 77.250000
+              },
+              {
+                  city : 'Mumbai',
+                  desc : 'Bollywood city!',
+                  lat : 19.000000,
+                  long : 72.90000
+              },
+              {
+                  city : 'Kolkata',
+                  desc : 'Howrah Bridge!',
+                  lat : 22.500000,
+                  long : 88.400000
+              },
+              {
+                  city : 'Chennai  ',
+                  desc : 'Kathipara Bridge!',
+                  lat : 13.000000,
+                  long : 80.250000
+              }
+          ];
 
-    var mapOptions = {
-        zoom: 10,
-        center: new google.maps.LatLng(12.9715987,77.59456269999998),
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-    }
+              var mapOptions = {
+                  zoom: 11,
+                  center: new google.maps.LatLng(12.9667, 77.5667),
+                  mapTypeId: google.maps.MapTypeId.TERRAIN
+              }
 
-    $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+              $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    $scope.markers = [];
+              $scope.markers = [];
 
-    var infoWindow = new google.maps.InfoWindow();
+              var infoWindow = new google.maps.InfoWindow();
 
-    var createMarker = function (info){
+              var createMarker = function (info){
 
-        var marker = new google.maps.Marker({
-            map: $scope.map,
-            position: new google.maps.LatLng(info.lat, info.lng),
-            title: info.city
-        });
-        marker.content = '<div class="infoWindowContent">' + info.role + '</div>';
+                  var marker = new google.maps.Marker({
+                      map: $scope.map,
+                      position: new google.maps.LatLng(info.lat, info.long),
+                      title: info.city
+                  });
+                  // marker.content = '<div class="infoWindowContent">' + info.desc + '</div>';
 
-        google.maps.event.addListener(marker, 'click', function(){
-            infoWindow.setContent('<h2>' + info.userId + '</h2>' + marker.content);
-            infoWindow.open($scope.map, marker);
-        });
+                  // google.maps.event.addListener(marker, 'click', function(){
+                  //     infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
+                  //     infoWindow.open($scope.map, marker);
+                  // });
 
-        $scope.markers.push(marker);
+                  $scope.markers.push(marker);
 
-    }
+              }
 
-    for(i=0;i<cities.length;i++){
-    	createMarker(cities[i]);
-	}
+              // for (i = 0; i < cities.length; i++){
+              //     createMarker(cities[i]);
+              // }
 
-
-    $scope.openInfoWindow = function(e, selectedMarker){
-        e.preventDefault();
-        google.maps.event.trigger(selectedMarker, 'click');
-    }
+              $scope.openInfoWindow = function(e, selectedMarker){
+                  e.preventDefault();
+                  google.maps.event.trigger(selectedMarker, 'click');
+              }
 
 
 });
